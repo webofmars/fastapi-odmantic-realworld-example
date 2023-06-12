@@ -1,2 +1,5 @@
 #!/bin/bash
-docker stop fastapi-odmantic-example
+
+set -e
+
+docker stop mongodb

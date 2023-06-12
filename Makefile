@@ -1,26 +1,12 @@
 all: build ci publish
 
 build: docker-build
-ci: lint format unit-tests coverage functional-tests ci-clean
+ci: dagger
 publish: docker-publish
 
-lint:
-	bash scripts/lint.sh
-
-format:
-	bash scripts/format.sh
-
-pre-commit:
-	bash scripts/pre-commit.sh
-
-unit-tests:
-	bash scripts/unit-tests.sh
-
-coverage:
-	bash scripts/coverage.sh
-
-functional-tests:
-	bash scripts/functional-tests.sh
+dagger:
+	pip install dagger.io==0.9.3 && \
+	python .dagger/ci.py
 
 ci-clean:
 	rm -rf .pytest_cache

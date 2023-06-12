@@ -1,0 +1,5 @@
+Creating virtualenv fastapi-odmantic-example-MATOk_fk-py3.10 in /root/.cache/pypoetry/virtualenvs
+INFO:     Started server process [8]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)

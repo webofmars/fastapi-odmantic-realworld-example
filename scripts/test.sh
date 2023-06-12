@@ -3,7 +3,7 @@
 set -e
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-export APIURL=http://realworld-127-0-0-1.sslip.io:8000
+export APIURL=http://api:8000
 
 USERNAME=${USERNAME:-u$(date +%s)}
 EMAIL=${EMAIL:-$USERNAME@mail.com}
