@@ -1,0 +1,16 @@
+.venv
+.vscode
+.helm
+.dockerignore
+.gitignore
+.gitmodules
+.git
+.mypy_cache
+.pytest_cache
+.env
+.pre-commit-config.yaml
+virtualenv
+Makefile
+Dockerfile
+README.md
+_CI.md
