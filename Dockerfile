@@ -1,5 +1,7 @@
 FROM python:3.10-slim-buster as base
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 WORKDIR /app
 COPY requirements.txt requirements.txt
 
@@ -10,16 +12,23 @@ RUN pip install --upgrade pip && \
 FROM base as prod
 COPY src/ /app/
 
-FROM prod as dev
-COPY requirements-dev.txt requirements-dev.txt
+FROM base as dev
+
+# hadolint ignore=DL3008,DL3015
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && apt-get install -y git curl && \
-    rm -rf /var/lib/apt/lists/* && \
-    pip install -r requirements-dev.txt
+    apt-get update && apt-get install -y --no-install-recommends git curl make && \
+    rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]
+COPY requirements-dev.txt requirements-dev.txt
+# hadolint ignore=DL3042
+RUN pip install -r requirements-dev.txt
 
+# hadolint ignore=DL3008,DL3015
 RUN export DEBIAN_FRONTEND=noninteractive && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
-    apt-get update && apt-get install -y nodejs && \
+    apt-get update && apt-get install -y --no-install-recommends nodejs && \
     rm -rf /var/lib/apt/lists/*
+
+COPY . /app/
+
+ENTRYPOINT ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "8000"]

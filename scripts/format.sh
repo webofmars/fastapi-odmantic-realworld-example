@@ -1,3 +1,4 @@
 #!/bin/bash
-isort -y
-black ./
+
+isort src --check
+black src --check
