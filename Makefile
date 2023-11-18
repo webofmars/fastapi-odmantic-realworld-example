@@ -1,7 +1,7 @@
 all: build ci publish
 
 build: docker-build
-ci: lint format unit-tests coverage ci-clean
+ci: lint format unit-tests coverage functional-tests ci-clean
 publish: docker-publish
 
 lint:
@@ -18,6 +18,9 @@ unit-tests:
 
 coverage:
 	bash scripts/coverage.sh
+
+functional-tests:
+	bash scripts/functional-tests.sh
 
 ci-clean:
 	rm -rf .pytest_cache
