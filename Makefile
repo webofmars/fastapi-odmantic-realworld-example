@@ -1,7 +1,7 @@
 all: build ci publish
 
 build: docker-build
-ci: lint format unit-tests ci-clean
+ci: lint format unit-tests coverage ci-clean
 publish: docker-publish
 
 lint:
@@ -26,11 +26,10 @@ ci-clean:
 docker-build: docker-build-prod docker-build-dev
 
 docker-build-prod:
-	docker build -t webofmars/cicdparadox:latest-prod --target=prod .
+	docker build -t webofmars/cicdparadox:standard-latest --target=prod .
 
 docker-build-dev:
-	docker build -t webofmars/cicdparadox:latest-dev --target=dev .
+	docker build -t webofmars/cicdparadox:standard-develop --target=dev .
 
 docker-publish: docker-build
-	docker push webofmars/cicdparadox:latest-prod
-	docker push webofmars/cicdparadox:latest-dev
+	docker push webofmars/cicdparadox:standard-latest
