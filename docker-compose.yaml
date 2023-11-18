@@ -1,0 +1,20 @@
+services:
+
+  api:
+    image: webofmars/cicdparadox:standard-latest
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://app:app@mongo:27017/test
+    depends_on:
+      - mongo
+
+  mongo:
+    image: bitnami/mongodb:4.4-debian-10
+    environment:
+      - MONGODB_ROOT_PASSWORD=root
+      - MONGODB_USERNAME=app
+      - MONGODB_PASSWORD=app
+      - MONGODB_DATABASE=test
+    volumes:
+      - ./docker/data/mongo:/data/db

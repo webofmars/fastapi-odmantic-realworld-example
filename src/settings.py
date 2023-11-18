@@ -1,3 +1,4 @@
+import os
 from typing import Optional
 
 from odmantic.fastapi import AIOEngineDependency
@@ -16,5 +17,6 @@ class _Settings(BaseSettings):
 
 # Make this a singleton to avoid reloading it from the env everytime
 SETTINGS = _Settings()
+SETTINGS.MONGO_URI = os.environ.get("MONGO_URI", None)
 
 EngineD = AIOEngineDependency(mongo_uri=SETTINGS.MONGO_URI)
