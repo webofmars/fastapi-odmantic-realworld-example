@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: realworld
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: realworld
+  template:
+    metadata:
+      labels:
+        app: realworld
+    spec:
+      imagePullSecrets:
+      - name: registrysecret
+      containers:
+      - name: app
+        image: {{ .Values.werf.image.prod }}
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_URI
+          value: mongodb://app:app@mongodb:27017/test

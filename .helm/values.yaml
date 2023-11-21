@@ -1,0 +1,22 @@
+mongodb:
+  fullnameOverride: mongodb
+  enabled: true
+  image:
+    tag: 4.4-debian-10
+  architecture: standalone
+  useStatefulSet: true
+  replicaCount: 1
+  auth:
+    enabled: true
+    username: app
+    password: app
+    database: test
+  readinessProbe:
+    enabled: false
+  livenessProbe:
+    enabled: false
+  # resources:
+  #   requests:
+  #     memory: 1Gi
+  #   limits:
+  #     memory: 1Gi

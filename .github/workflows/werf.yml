@@ -1,0 +1,66 @@
+name: CI Workflow (werf)
+
+on:
+  push:
+    branches:
+      - ci/werf
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Install asdf
+      uses: asdf-vm/actions/setup@v3.0.2
+
+    - name: Install asdf plugins & packages
+      run: |
+        asdf plugin add werf https://github.com/MxNxPx/asdf-werf.git
+        asdf plugin update --all
+        asdf install
+
+    - name: Provision kind Kubernetes cluster
+      run: |
+        set -x
+        curl -Lo /tmp/kind https://kind.sigs.k8s.io/dl/v0.20.0/kind-linux-amd64
+        chmod +x /tmp/kind
+        cat <<EOF | /tmp/kind create cluster --config=-
+        kind: Cluster
+        apiVersion: kind.x-k8s.io/v1alpha4
+        nodes:
+        - role: control-plane
+          kubeadmConfigPatches:
+          - |
+            kind: InitConfiguration
+            nodeRegistration:
+              kubeletExtraArgs:
+                node-labels: "ingress-ready=true"
+          extraPortMappings:
+          - containerPort: 80
+            hostPort: 80
+            protocol: TCP
+          - containerPort: 443
+            hostPort: 443
+            protocol: TCP
+        EOF
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
+        sleep 30
+        kubectl wait --namespace ingress-nginx \
+          --for=condition=ready pod \
+          --selector=app.kubernetes.io/component=controller \
+          --timeout=90s
+
+    - name: Run make ci
+      run: |
+        make ci

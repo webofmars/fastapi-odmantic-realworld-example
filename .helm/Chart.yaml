@@ -1,0 +1,12 @@
+apiVersion: v2
+name: conduit
+description: A Helm chart for Conduit
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+
+dependencies:
+  - name: mongodb
+    repository: https://raw.githubusercontent.com/bitnami/charts/pre-2022/bitnami
+    version: 11.2.0
+    condition: mongodb.enabled

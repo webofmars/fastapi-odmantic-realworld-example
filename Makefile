@@ -1,23 +1,25 @@
 all: build ci publish
 
 build: docker-build
-ci: lint format unit-tests coverage functional-tests ci-clean
+ci: lint format unit-tests coverage functional-tests
 publish: docker-publish
 
-lint:
-	bash scripts/lint.sh
+WERF_RUN = werf run --docker-options="-i --rm --entrypoint=/bin/bash" dev
 
-format:
-	bash scripts/format.sh
+lint: docker-build
+	${WERF_RUN} -- -c "bash scripts/lint.sh"
 
-pre-commit:
-	bash scripts/pre-commit.sh
+format: docker-build
+	${WERF_RUN} -- -c "bash scripts/format.sh"
 
-unit-tests:
-	bash scripts/unit-tests.sh
+pre-commit: docker-build
+	echo "TO BE IMPLEMENTED"
 
-coverage:
-	bash scripts/coverage.sh
+unit-tests: docker-build
+	${WERF_RUN} -- -c "bash scripts/unit-tests.sh"
+
+coverage: docker-build
+	${WERF_RUN} -- -c "bash scripts/coverage.sh"
 
 functional-tests:
 	bash scripts/functional-tests.sh
@@ -26,13 +28,9 @@ ci-clean:
 	rm -rf .pytest_cache
 	rm -rf .mypy_cache
 
-docker-build: docker-build-prod docker-build-dev
-
-docker-build-prod:
-	docker build -t webofmars/cicdparadox:standard-latest --target=prod .
-
-docker-build-dev:
-	docker build -t webofmars/cicdparadox:standard-develop --target=dev .
+docker-build:
+	werf build --repo webofmars/cicdparadox
 
 docker-publish: docker-build
-	docker push webofmars/cicdparadox:standard-latest
+	docker push webofmars/cicdparadox:latest-prod
+	docker push webofmars/cicdparadox:latest-dev

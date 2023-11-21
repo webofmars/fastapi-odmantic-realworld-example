@@ -1,0 +1,15 @@
+configVersion: 1
+project: cicdparadox
+---
+image:  prod
+dockerfile: Dockerfile
+target: prod
+---
+image:  dev
+dockerfile: Dockerfile
+target: dev
+dependencies:
+- image: prod
+  imports:
+  - type: ImageName
+    targetBuildArg: BASE_IMAGE
