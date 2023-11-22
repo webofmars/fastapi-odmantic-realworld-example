@@ -1,38 +1,39 @@
 all: build ci publish
 
 build: docker-build
-ci: lint format unit-tests coverage functional-tests ci-clean
+ci: lint format unit-tests coverage functional-tests
 publish: docker-publish
 
 lint:
-	bash scripts/lint.sh
+	earthly +lint
 
 format:
-	bash scripts/format.sh
+	earthly +format
 
-pre-commit:
-	bash scripts/pre-commit.sh
+# FIXME: since we don't mount .git folders in docker, we can't use pre-commit
+# pre-commit:
+# 	earthly +pre-commit
 
 unit-tests:
-	bash scripts/unit-tests.sh
+	earthly +unit-tests
 
 coverage:
-	bash scripts/coverage.sh
+	earthly +coverage
 
 functional-tests:
-	bash scripts/functional-tests.sh
+	earthly --allow-privileged +functional-tests
 
 ci-clean:
-	rm -rf .pytest_cache
-	rm -rf .mypy_cache
+	earthly prune
 
 docker-build: docker-build-prod docker-build-dev
 
 docker-build-prod:
-	docker build -t webofmars/cicdparadox:standard-latest --target=prod .
+	earthly +prod
 
 docker-build-dev:
-	docker build -t webofmars/cicdparadox:standard-develop --target=dev .
+	earthly +dev
 
 docker-publish: docker-build
-	docker push webofmars/cicdparadox:standard-latest
+	earthly prod --push
+	earthly dev --push

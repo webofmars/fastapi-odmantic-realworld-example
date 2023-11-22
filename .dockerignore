@@ -8,7 +8,5 @@
 virtualenv
 README.md
 _CI.md
-docker-compose*.yaml
-docker-compose*.yml
 docker/data/**
 Conduit.postman_collection.json

@@ -2,8 +2,6 @@
 
 set -e
 
-echo "Starting API stack"
-docker compose up -d api
 echo "Waiting for API container to be up"
 bash scripts/wait-for-it.sh localhost:8000 --timeout=60 --strict -- echo "API is up"
 echo "Waiting for API to be healthy"
@@ -15,4 +13,3 @@ echo ""
 echo "API is healthy"
 echo "Running functional tests"
 bash scripts/test.sh
-docker compose stop

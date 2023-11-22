@@ -1,7 +1,6 @@
 services:
-
   api:
-    image: webofmars/cicdparadox:standard-latest
+    image: webofmars/cicdparadox:earthly-latest
     ports:
       - "8000:8000"
     environment:
