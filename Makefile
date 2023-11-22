@@ -1,25 +1,27 @@
 all: build ci publish
 
 build: docker-build
-ci: lint format unit-tests coverage functional-tests ci-clean
+ci: docker-build lint format unit-tests coverage functional-tests ci-clean
 publish: docker-publish
 
-lint:
-	bash scripts/lint.sh
+DOCKER_RUN = docker run --rm -i --entrypoint bash webofmars/cicdparadox:standard-develop
 
-format:
-	bash scripts/format.sh
+lint: docker-build-dev
+	${DOCKER_RUN} scripts/lint.sh
 
-pre-commit:
-	bash scripts/pre-commit.sh
+format: docker-build-dev
+	${DOCKER_RUN} scripts/format.sh
 
-unit-tests:
-	bash scripts/unit-tests.sh
+pre-commit: docker-build-dev
+	${DOCKER_RUN} scripts/pre-commit.sh
 
-coverage:
-	bash scripts/coverage.sh
+unit-tests: docker-build-dev
+	${DOCKER_RUN} scripts/unit-tests.sh
 
-functional-tests:
+coverage: docker-build-dev
+	${DOCKER_RUN} scripts/coverage.sh
+
+functional-tests: docker-build-prod
 	bash scripts/functional-tests.sh
 
 ci-clean:
